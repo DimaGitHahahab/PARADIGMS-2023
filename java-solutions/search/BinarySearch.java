@@ -62,7 +62,7 @@ public class BinarySearch {
         }
     }
 
-    //Pred: args.length >= 2 && args[0] == target
+    //Pred: args.length >= 2 && args[0] == target && sorted array
     public static void main(String[] args) {
         int target = Integer.parseInt(args[0]);
         int[] array = new int[args.length - 1];

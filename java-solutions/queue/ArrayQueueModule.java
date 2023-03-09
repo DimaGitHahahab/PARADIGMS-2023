@@ -1,7 +1,9 @@
 package queue;
 
 import java.util.Arrays;
-
+// Model: a[1]..a[n]
+// Invariant: for i=1..n: a[i] != null
+// Let immutable(n): for i=1..n: a'[i] == a[i]
 public class ArrayQueueModule {
     private static Object[] elements = new Object[2];
     private static int size = 0;

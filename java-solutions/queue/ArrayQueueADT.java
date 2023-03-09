@@ -1,14 +1,15 @@
 package queue;
 
 import java.util.Arrays;
-
-// Model???
+// Model: a[1]..a[n]
+// Invariant: for i=1..n: a[i] != null
+// Let immutable(n): for i=1..n: a'[i] == a[i]
 public class ArrayQueueADT {
     private Object[] elements = new Object[2];
     private int size = 0;
     private int head = 0;
     // Pred: element != null
-    // Post: n = n' + 1 && a[n'] = element && immutable(n) // declare immutable
+    // Post: n = n' + 1 && a[n'] = element && immutable(n)
     public static void enqueue(ArrayQueueADT queue, Object element) {
         assert element != null;
         ensureCapacity(queue, queue.size + 1);

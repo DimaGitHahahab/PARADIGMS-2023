@@ -61,7 +61,7 @@ public class BinarySearchShift {
         }
     }
 
-    //Pred: args.length > 0 && any array[i] > array[i + 1] \ {i = k}
+    //Pred: args.length > 0 && any array[i] > array[i + 1] \ {i = k}1
     public static void main(String[] args) {
         int[] array = new int[args.length];
         for (int i = 0; i < array.length; i++) {

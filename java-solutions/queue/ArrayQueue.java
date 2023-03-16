@@ -1,25 +1,19 @@
 package queue;
 
 import java.util.Arrays;
-// Model: a[1]..a[n]
-// Invariant: for i=1..n: a[i] != null
-// Let immutable(n): for i=1..n: a'[i] == a[i]
-public class ArrayQueue {
+
+public class ArrayQueue extends AbstractQueue {
     private Object[] elements = new Object[2];
-    private int size = 0;
     private int head = 0;
 
-    // Pred: element != null
-    // Post: n = n' + 1 && a[n'] = element && immutable(n)
-    public void enqueue(Object element) {
-        assert element != null;
+    @Override
+    protected void enqueueImpl(Object element) {
         ensureCapacity(size + 1);
         if (head + size >= elements.length) {
             elements[head + size - elements.length] = element;
         } else {
             elements[head + size] = element;
         }
-        size++;
     }
 
     // Pred: true
@@ -38,17 +32,13 @@ public class ArrayQueue {
 
     }
 
-    // Pred: n >= 1
-    // Post: R = a[0] && immutable(n)
-    public Object element() {
-        assert size > 0;
+    @Override
+    protected Object elementImpl() {
         return elements[head];
     }
 
-    // Pred: n >= 1
-    // Post: R = a[0] && n = n' - 1
-    public Object dequeue() {
-        assert size > 0;
+    @Override
+    protected Object dequeueImpl() {
         Object result = elements[head];
         elements[head] = null;
         if (head == elements.length - 1) {
@@ -60,23 +50,9 @@ public class ArrayQueue {
         return result;
     }
 
-    // Pred: true
-    // Post: R = n && immutable(n)
-    public int size() {
-        return size;
-    }
-
-    // Pred: true
-    // Post: R = (n = 0) && immutable(n)
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    // Pred: true
-    // Post: n' = 0
-    public void clear() {
+    @Override
+    protected void clearImpl() {
         elements = new Object[2];
-        size = 0;
         head = 0;
     }
 

@@ -9,3 +9,6 @@ _*
 
 # Store .git files
 !.git*
+
+# Do not store .jar files
+*.jar

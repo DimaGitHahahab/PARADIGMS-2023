@@ -1,3 +1,4 @@
+'use strict'
 const variable = name => (x, y, z) => {
     switch (name) {
         case 'x':

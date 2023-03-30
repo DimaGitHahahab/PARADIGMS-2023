@@ -1,4 +1,4 @@
-let variable = name => (x, y, z) => {
+const variable = name => (x, y, z) => {
     switch (name) {
         case 'x':
             return x;
@@ -8,17 +8,16 @@ let variable = name => (x, y, z) => {
             return z;
     }
 }
-let binaryOperation = operation => (left, right) => (x, y, z) => operation(left(x, y, z), right(x, y, z));
-let add = (left, right) => binaryOperation((a, b) => a + b)(left, right);
-let subtract = (left, right) => binaryOperation((a, b) => a - b)(left, right);
-let multiply = (left, right) => binaryOperation((a, b) => a * b)(left, right);
-let divide = (left, right) => binaryOperation((a, b) => a / b)(left, right);
-let cnst = value => () => value;
+const Operation = operation => (...operands) => (...args) => operation(...operands.map(operand => operand(...args)));
+const add = (...args) => Operation((a, b) => a + b)(...args);
+const subtract = (...args) => Operation((a, b) => a - b)(...args);
+const multiply = (...args) => Operation((a, b) => a * b)(...args);
+const divide = (...args) => Operation((a, b) => a / b)(...args);
+const cnst = value => () => value;
+const negate = value => Operation(a => -a)(value)
 
 const one = cnst(1);
 const two = cnst(2);
 
-let unaryOperation = operation => exp => (x, y, z) => operation(exp(x, y, z));
-let sin = unaryOperation(Math.sin);
-let cos = unaryOperation(Math.cos);
-let negate = unaryOperation(x => -x);
+const sin = value => Operation(Math.sin)(value)
+const cos = value => Operation(Math.cos)(value)

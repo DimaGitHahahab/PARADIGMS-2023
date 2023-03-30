@@ -1,3 +1,5 @@
+"use strict";
+
 function Const(value) {
     this.value = value
     this.evaluate = function (x, y, z) {
@@ -58,9 +60,10 @@ function Divide(left, right) {
 
 Divide.prototype = BinaryOperation.prototype;
 
-function UnaryOperation(value, operation) {
+function UnaryOperation(value, operation, sign) {
     this.value = value;
     this.operation = operation;
+    this.sign = sign;
 }
 
 UnaryOperation.prototype = {
@@ -68,15 +71,27 @@ UnaryOperation.prototype = {
         return this.operation(this.value.evaluate(x, y, z));
     },
     toString: function () {
-        return `${this.value.toString()} negate`;
+        return `${this.value.toString()} ${this.sign}`;
     },
 }
 
 function Negate(value) {
-    UnaryOperation.call(this, value, a => -a)
+    UnaryOperation.call(this, value, a => -a, 'negate')
 }
 
 Negate.prototype = UnaryOperation.prototype;
+
+function Exp(value) {
+    UnaryOperation.call(this, value, a => Math.exp(a), 'exp')
+}
+
+Exp.prototype = UnaryOperation.prototype;
+
+function Ln(value) {
+    UnaryOperation.call(this, value, a => Math.log(a), 'ln')
+}
+
+Ln.prototype = UnaryOperation.prototype;
 
 function parse(expression) {
     const stack = [];
@@ -87,14 +102,16 @@ function parse(expression) {
         '-': Subtract,
         '*': Multiply,
         '/': Divide,
-        'negate': Negate
+        'negate': Negate,
+        'exp': Exp,
+        'ln': Ln,
     };
     for (const token of tokens) {
         if (token === 'x' || token === 'y' || token === 'z') {
             stack.push(new Variable(token));
         } else if (token in operations) {
-            const arity = operations[token].length;
-            const args = stack.splice(-arity);
+            const amountOfArgsOfClass = operations[token].length;
+            const args = stack.splice(-amountOfArgsOfClass);
             stack.push(new operations[token](...args));
         } else {
             stack.push(new Const(parseFloat(token)));

@@ -105,7 +105,6 @@ function parse(expression) {
                 args.push(stack.pop())
             }
             stack.push(new Operation(operationsList[token], token, ...args.reverse()))
-
         } else if (token in {'x': 0, 'y': 1, 'z': 2}) {
             stack.push(new Variable(token))
         } else {

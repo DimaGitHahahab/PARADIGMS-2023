@@ -43,7 +43,7 @@
         (vector? b) (mapv #(varLengthFunc %1 %2 operation) a b)
         :else (operation a b)))
 
-(defn s+ [a b] ((varLengthFunc a b +)))
+(defn s+ [a b] (partial (varLengthFunc a b +)))
 (defn s- [a b] (partial (varLengthFunc a b -)))
 (defn s* [a b] (partial (varLengthFunc a b *)))
 (defn sd [a b] (partial (varLengthFunc a b /)))

@@ -9,6 +9,9 @@ Const.prototype = {
         return this.value
     }, toString: function () {
         return this.value.toString()
+    },
+    prefix: function () {
+        return this.value.toString()
     }
 }
 
@@ -20,6 +23,9 @@ Variable.prototype = {
     evaluate: function (x, y, z) {
         return {x, y, z}[this.name]
     }, toString: function () {
+        return this.name
+    },
+    prefix: function () {
         return this.name
     }
 }
@@ -35,6 +41,9 @@ Operation.prototype = {
         return this.operation(...this.args.map(arg => arg.evaluate(...args)));
     }, toString: function () {
         return `${this.args.join(' ')} ${this.sign}`;
+    },
+    prefix: function () {
+        return `(${this.sign} ${this.args.map(arg => arg.prefix()).join(' ')})`;
     }
 }
 
@@ -114,3 +123,61 @@ function parse(expression) {
     return stack.pop();
 }
 
+function isEmpty(expression) {
+    if (expression.replaceAll("(", "").replaceAll(")", "").trim() === "") {
+        return true;
+    }
+    return false;
+}
+
+function parsePrefix(expression) {
+    if (isEmpty(expression)) {
+        throw new Error("Invalid expression");
+    }
+    let openParenthesesCount = 0;
+    const stack = [];
+    const tokens = expression.replaceAll("(", " ( ").replaceAll(")", " ) ").trim().split(" ").reverse();
+    let expectOperation = false;
+
+    for (let token of tokens) {
+        if (token === '') {
+            continue;
+        }
+        if (token === '(') {
+            if (!expectOperation) {
+                throw new Error("Invalid expression");
+            }
+            openParenthesesCount++;
+        } else if (token === ')') {
+            openParenthesesCount--;
+            expectOperation = false;
+        } else if (token in operationsList) {
+            const args = []
+            for (let i = 0; i < operationsList[token].length; i++) {
+                if (stack.length === 0) {
+                    throw new Error("Invalid expression");
+                }
+                args.push(stack.pop())
+            }
+            stack.push(new Operation(operationsList[token], token, ...args));
+            expectOperation = true;
+        } else if (token in {'x': 0, 'y': 1, 'z': 2}) {
+            stack.push(new Variable(token));
+            expectOperation = false;
+        } else if (!isNaN(+token)) {
+            stack.push(new Const(+token));
+            expectOperation = false;
+        } else {
+            throw new Error(`Unexpected symbol: ${token}`);
+        }
+    }
+
+    if (openParenthesesCount !== 0) {
+        throw new Error("Missing closing parenthesis");
+    }
+
+    if (stack.length !== 1) {
+        throw new Error("Invalid expression");
+    }
+    return stack.pop();
+}

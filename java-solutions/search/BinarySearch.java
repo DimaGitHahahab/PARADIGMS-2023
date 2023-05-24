@@ -66,14 +66,12 @@ public class BinarySearch {
     public static void main(String[] args) {
         int target = Integer.parseInt(args[0]);
         int[] array = new int[args.length - 1];
+        int sum = 0;
         for (int i = 0; i < array.length; i++) {
             array[i] = Integer.parseInt(args[i + 1]);
+            sum += array[i];
         }
-        int sum = 0;
-        for (int j : array) {
-            sum += j;
-        }
-        if (sum%2 == 0) {
+        if (sum % 2 == 0) {
             System.out.println(iterative(array, target));
         } else {
             System.out.println(recursive(array, target, -1, array.length));
